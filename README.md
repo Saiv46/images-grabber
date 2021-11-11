@@ -54,7 +54,7 @@ $ img-grab deviantart https://www.deviantart.com/kvacm
 ```
 * Get images from pixiv including images in collections
 ```sh
-$ img-grab pixiv pixiv.net/member_illust.php?id=10655554 https://www.pixiv.net/member.php?id=810305 -c
+$ img-grab pixiv pixiv.net/en/users/10655554/artworks https://www.pixiv.net/en/users/810305 -c
 ```
 * Get images from twitter (10 images per iteration)
 ```sh
@@ -71,4 +71,4 @@ $ img-grab twitter https://twitter.com/genskc -i 10
 ### References
 * [The Open CLI Framework](https://oclif.io)
 * [node-twitter-media](https://github.com/tukiyururu/node-twitter-media) by [tukiyururu](https://github.com/tukiyururu)
-* [pixiv-app-api](https://github.com/akameco/pixiv-app-api) and [pixiv-img](https://github.com/akameco/pixiv-img) by [akameco](https://github.com/akameco)
+* [pixiv-app-api](https://github.com/akameco/pixiv-app-api)
