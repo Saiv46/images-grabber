@@ -18,9 +18,12 @@ describe("pixiv tests", () => {
 
   describe("links", () => {
     test("valid links", () => {
-      expect.assertions(1);
+      expect.assertions(2);
       expect(
-        pixivRegExp.test("https://www.pixiv.net/member_illust.php?id=10655554")
+        pixivRegExp.test("https://www.pixiv.net/en/users/10655554/artworks")
+      ).toBeTruthy();
+      expect(
+        pixivRegExp.test("https://www.pixiv.net/en/users/10655554/")
       ).toBeTruthy();
     });
 
@@ -28,7 +31,7 @@ describe("pixiv tests", () => {
       expect.assertions(4);
       expect(pixivRegExp.test("https://google.com")).toBeFalsy();
       expect(
-        pixivRegExp.test("https://www.pixiv.nets/member_illust.php?id=10655554")
+        pixivRegExp.test("https://www.pixiv.net/en/users_and_ponies")
       ).toBeFalsy();
       expect(pixivRegExp.test("https://twitter.com/genskc")).toBeFalsy();
       expect(pixivRegExp.test("https://www.deviantart.com/kvacm")).toBeFalsy();
@@ -51,7 +54,7 @@ describe("pixiv tests", () => {
       expect.assertions(1);
       try {
         await search.getImages(
-          "https://www.pixiv.net/member_illust.php?id=10655554"
+          "https://www.pixiv.net/en/users/10655554/artworks"
         );
       } catch (e) {
         expect(e.message).toMatch(/Pixiv account credentials need!/);
@@ -62,7 +65,7 @@ describe("pixiv tests", () => {
       expect.assertions(1);
       try {
         await search.getImages(
-          "https://www.pixiv.nets/member_illust.php?id=10655554"
+          "https://www.pixiv.net/InvalidLink"
         );
       } catch (e) {
         expect(e.message).toMatch(/Invalid pixiv link/);
@@ -85,7 +88,7 @@ describe("pixiv tests", () => {
     test("getting images with valid link", async () => {
       expect.assertions(2);
       const images = await search.getImages(
-        "https://www.pixiv.net/member_illust.php?id=10655554"
+        "https://www.pixiv.net/en/users/10655554/artworks"
       );
       expect(Array.isArray(images)).toBeTruthy();
       expect(images.length).toBeGreaterThan(0);
@@ -95,7 +98,7 @@ describe("pixiv tests", () => {
       expect.assertions(1);
       try {
         await search.getImages(
-          "https://www.pixiv.nets/member_illust.php?id=10655554"
+          "https://www.pixiv.net/NeverGonnaGiveMeUp"
         );
       } catch (e) {
         expect(e.message).toMatch(/Invalid pixiv link/);
