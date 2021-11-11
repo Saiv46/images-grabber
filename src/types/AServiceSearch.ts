@@ -12,7 +12,7 @@ export default abstract class AServiceSearch {
     this.events = new EventEmitter();
   }
 
-  public abstract async getImages(source: string): Promise<string[]>;
+  public abstract getImages(source: string): Promise<string[]>;
 
   public async downloadImages(source: string, images: string[] = []): Promise<void> {
     const { path, imagesPerIteration } = this.options;
@@ -47,14 +47,14 @@ export default abstract class AServiceSearch {
     return;
   }
 
-  public abstract async login(
+  public abstract login(
     username: string,
     password: string
   ): Promise<boolean>;
 
   protected abstract getSourceID(source: string): string | undefined;
 
-  protected abstract async downloadImage(
+  protected abstract downloadImage(
     url: string,
     path: string,
     index: number
