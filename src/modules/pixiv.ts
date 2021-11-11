@@ -2,7 +2,9 @@ import co from "co";
 import flattenDeep from "lodash.flattendeep";
 import { extname } from "path";
 import PixivApi from "pixiv-app-api";
-import pixivImg from "pixiv-img";
+import fetch from "node-fetch";
+import { once } from "stream";
+import { createWriteStream } from "fs";
 import { URL } from "url";
 
 import AServiceSearch from "../types/AServiceSearch";
@@ -70,12 +72,17 @@ class PixivSearch extends AServiceSearch {
     return this.pixivApi
       .login(username, password)
       .then(() => (this.authorized = true))
-      .catch(() => (this.authorized = false));
+      .catch((err) => (console.error(err), this.authorized = false));
   }
 
   protected getSourceID(source: string): string | undefined {
-    const [, authorID] = pixivRegExp.exec(source) || [undefined, undefined];
+    const [, , authorID] = pixivRegExp.exec(source) || [undefined, undefined, undefined];
     return authorID;
+  }
+  
+  protected getSourceType(source: string): string | undefined {
+    const [, type] = pixivRegExp.exec(source) || [undefined, undefined];
+    return type;
   }
 
   /**
@@ -89,7 +96,14 @@ class PixivSearch extends AServiceSearch {
     const file = `${path}/${index}${extname(pathname)}`;
 
     try {
-      await pixivImg(url, file);
+      const res = await fetch(url, {
+        headers: {
+          Referer: 'http://www.pixiv.net/'
+        }
+      });
+      if (!res.ok) throw new Error(res.statusText);
+      const body = res.body.pipe(createWriteStream(file))
+      await once(body, 'close');
     } catch (e) {
       this.events.emit("error", `Image (${url}) downloading error: ${e}`);
     }
@@ -149,5 +163,5 @@ class PixivSearch extends AServiceSearch {
 
 export default PixivSearch;
 export const pixivRegExp = new RegExp(
-  /(?:http[s]?:\/\/)?(?:www.)?(?:pixiv.net\/member(?:_illust)?.php\?id=)(\d{1,})/i
+  /(?:http[s]?:\/\/)?(?:www.)?(?:pixiv.net\/\w{2}\/(artworks|users)\/)(\d{1,})/i
 );
